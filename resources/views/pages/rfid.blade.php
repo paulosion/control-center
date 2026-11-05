@@ -6,7 +6,7 @@
   <p>Today's taps on the office readers, whether the camera's photo arrived, and what face matching said.</p></div>
 
 @if(! $rfid['ok'])
-  <div class="note"><b>{{ $rfid['error'] }}.</b> {{ ! empty($rfid['unconfigured']) ? 'Set GENONE_DB_URL (or the GENONE_DB_* variables) on this service.' : 'The my-genone database didn\'t answer. This page tries again in a minute.' }}</div>
+  <div class="note"><b>{{ $rfid['error'] }}.</b> {{ ! empty($rfid['unconfigured']) ? 'Set GENONE_DB_URL (or the GENONE_DB_* variables) on this service.' : 'Check GENONE_DB_URL on this Railway service: it must be my-genone\'s database login. This page tries again every minute.' }}</div>
 @else
   @php
     $d = $rfid['data'];

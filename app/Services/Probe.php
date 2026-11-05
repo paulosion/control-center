@@ -40,7 +40,7 @@ class Probe
             return 'Can\'t reach the database';
         }
         if (str_contains($m, 'password authentication failed')) {
-            return 'Database login rejected';
+            return 'Database login rejected (wrong user or password in the URL)';
         }
         if (str_contains($m, 'does not exist')) {
             return 'Missing table or column';
