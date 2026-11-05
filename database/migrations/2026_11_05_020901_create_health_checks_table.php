@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('health_checks', function (Blueprint $table) {
+            $table->id();
+            $table->string('system', 40);
+            $table->boolean('ok');
+            $table->unsignedSmallInteger('status')->nullable();
+            $table->unsignedInteger('ms')->nullable();
+            $table->string('error', 255)->nullable();
+            $table->timestamp('checked_at');
+
+            $table->index(['system', 'checked_at']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('health_checks');
+    }
+};
