@@ -19,6 +19,10 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        // Emails are stored lowercased by app:ensure-admin; a phone keyboard
+        // capitalising the first letter shouldn't lock you out.
+        $credentials['email'] = strtolower(trim($credentials['email']));
+
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()->withErrors(['email' => 'Wrong email or password.'])->onlyInput('email');
         }

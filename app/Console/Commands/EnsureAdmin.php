@@ -9,32 +9,40 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 
 #[Signature('app:ensure-admin')]
-#[Description('Create the login from ADMIN_EMAIL / ADMIN_PASSWORD if it does not exist yet')]
+#[Description('Make ADMIN_EMAIL / ADMIN_PASSWORD the login (create it, or update the password)')]
 class EnsureAdmin extends Command
 {
-    // Runs on every deploy (nixpacks start command). It only ever creates the
-    // account; once it exists, ADMIN_PASSWORD can be deleted from Railway and
-    // nothing changes. To reset the password, set ADMIN_RESET_PASSWORD=1 for
-    // one deploy.
+    // Runs on every deploy (nixpacks start command). ADMIN_EMAIL and
+    // ADMIN_PASSWORD are always the login: the account is created if missing
+    // and its password is updated whenever ADMIN_PASSWORD changes. Any other
+    // accounts (e.g. from an earlier ADMIN_EMAIL) are removed, since this is
+    // a single-user app.
     public function handle(): int
     {
-        $email = config('app.admin.email');
-        $password = config('app.admin.password');
+        $email = strtolower(trim((string) config('app.admin.email')));
+        $password = (string) config('app.admin.password');
 
-        if (! $email || ! $password) {
-            $this->line('ADMIN_EMAIL / ADMIN_PASSWORD not set; skipping.');
+        if ($email === '' || $password === '') {
+            $this->warn('ADMIN_EMAIL / ADMIN_PASSWORD not set; nobody can sign in.');
 
             return self::SUCCESS;
         }
 
-        $user = User::where('email', $email)->first();
+        $user = User::whereRaw('lower(email) = ?', [$email])->first();
 
         if (! $user) {
-            User::create(['name' => 'Admin', 'email' => $email, 'password' => Hash::make($password)]);
-            $this->info("Created login for {$email}.");
-        } elseif (config('app.admin.reset')) {
+            $user = User::create(['name' => 'Admin', 'email' => $email, 'password' => Hash::make($password)]);
+            $this->info("Login created for {$email}.");
+        } elseif (! Hash::check($password, $user->password)) {
             $user->update(['password' => Hash::make($password)]);
-            $this->info("Reset password for {$email}.");
+            $this->info("Password updated for {$email}.");
+        } else {
+            $this->line("Login for {$email} is up to date.");
+        }
+
+        $removed = User::whereKeyNot($user->id)->delete();
+        if ($removed) {
+            $this->line("Removed {$removed} old login(s).");
         }
 
         return self::SUCCESS;
