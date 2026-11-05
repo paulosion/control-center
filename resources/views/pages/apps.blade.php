@@ -23,7 +23,7 @@
       </ul>
       <div class="panel-foot">Only finished runs are saved. Rejected reports (unfinished steps) aren't recorded yet.</div>
     @else
-      <div class="empty-state" style="flex:1"><b>{{ $pm['error'] }}</b>{{ ! empty($pm['unconfigured']) ? 'Set HR201_DB_URL on this service to read 201 System.' : 'Trying again shortly.' }}</div>
+      <div class="empty-state" style="flex:1"><b>{{ $pm['error'] }}</b>{{ ! empty($pm['unconfigured']) ? 'Set GENONE_DB_URL on this service; 201 System uses the same database.' : 'Trying again shortly.' }}</div>
     @endif
   </div>
 

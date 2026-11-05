@@ -6,19 +6,20 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Reads from 201 System (maintenance agent runs, tickets) and PayMaya
+ * Reads from 201 System (maintenance agent runs, tickets — stored in the
+ * same database as my-genone) and PayMaya
  * (verifications). Each returns Probe's ok/data/error shape.
  */
 class OtherStats
 {
     public static function maintenance(): array
     {
-        if (! Probe::configured('hr201')) {
+        if (! Probe::configured('genone')) {
             return ['ok' => false, 'error' => 'Not connected', 'unconfigured' => true];
         }
 
         return Probe::run('pm-runs', 120, function () {
-            $db = DB::connection('hr201');
+            $db = DB::connection('genone');
             $since = now()->subDays(7);
 
             return [
@@ -34,12 +35,12 @@ class OtherStats
 
     public static function tickets(): array
     {
-        if (! Probe::configured('hr201')) {
+        if (! Probe::configured('genone')) {
             return ['ok' => false, 'error' => 'Not connected', 'unconfigured' => true];
         }
 
         return Probe::run('tickets', 120, function () {
-            $db = DB::connection('hr201');
+            $db = DB::connection('genone');
             $open = $db->table('tickets')->whereNull('resolved_at');
 
             return [

@@ -21,7 +21,7 @@ return [
         'sub' => 'IT admin · devices, accounts',
         'url' => env('HR201_URL', 'https://genone-201.up.railway.app'),
         'health' => '/up',
-        'db' => 'hr201',
+        'db' => 'genone', // same database as my-genone
         'repo' => null,
     ],
 

@@ -105,6 +105,8 @@ return [
          * connections READ ONLY with a short statement timeout: the control
          * center can look, never write, and a slow query can't hold up prod.
          */
+        // my-genone and 201 System share this database (201's devices,
+        // tickets and maintenance runs live next to my-genone's tables).
         'genone' => [
             'driver' => 'pgsql',
             'url' => env('GENONE_DB_URL'),
@@ -113,21 +115,6 @@ return [
             'database' => env('GENONE_DB_DATABASE'),
             'username' => env('GENONE_DB_USERNAME'),
             'password' => env('GENONE_DB_PASSWORD'),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'search_path' => 'public',
-            'sslmode' => 'prefer',
-            'watched' => true,
-        ],
-
-        'hr201' => [
-            'driver' => 'pgsql',
-            'url' => env('HR201_DB_URL'),
-            'host' => env('HR201_DB_HOST'),
-            'port' => env('HR201_DB_PORT', '5432'),
-            'database' => env('HR201_DB_DATABASE'),
-            'username' => env('HR201_DB_USERNAME'),
-            'password' => env('HR201_DB_PASSWORD'),
             'charset' => 'utf8',
             'prefix' => '',
             'search_path' => 'public',

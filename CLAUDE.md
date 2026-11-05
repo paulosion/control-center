@@ -4,7 +4,7 @@ Single-user backend dashboard for Paulo's systems (my-genone, 201 System, PayMay
 
 ## Rules
 
-- **Never write to a watched database.** `genone`, `hr201` and `paymaya` connections reuse each app's own prod login. `AppServiceProvider` sets every session on them to `READ ONLY` with a 5 s `statement_timeout`. Keep it that way; don't add writes or remove the guard.
+- **Never write to a watched database.** `genone` (shared by my-genone and 201 System) and `paymaya` connections reuse each app's own prod login. `AppServiceProvider` sets every session on them to `READ ONLY` with a 5 s `statement_timeout`. Keep it that way; don't add writes or remove the guard.
 - All reads from watched systems go through `App\Services\Probe::run()` so one unreachable database never breaks a page, and results are cached briefly.
 - my-genone and 201 store timestamps in Asia/Manila; PayMaya stores UTC (convert with `Carbon::parse($v, 'UTC')->setTimezone(...)`).
 - Blade: use `@php ... @endphp` blocks only, never inline `@php(...)` (an inline one followed by a later `@endphp` breaks compilation).
