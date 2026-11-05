@@ -11,9 +11,6 @@
   $genone = $health['my-genone'] ?? null;
 @endphp
 
-<div class="view-head"><h1>Backend status</h1>
-  <p>Live from your systems. Refreshes every minute. Failures first.</p></div>
-
 <div>
   <div class="label" style="margin-bottom:8px">Failing or at risk</div>
   @if($shown)
