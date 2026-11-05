@@ -23,7 +23,7 @@
       </ul>
       <div class="panel-foot">Only finished runs are saved. Rejected reports (unfinished steps) aren't recorded yet.</div>
     @else
-      <div class="empty-state" style="flex:1"><b>{{ $pm['error'] }}</b>{{ ! empty($pm['unconfigured']) ? 'Set GENONE_DB_URL on this service; 201 System uses the same database.' : 'Trying again shortly.' }}</div>
+      <div class="empty-state" style="flex:1"><b>{{ $pm['error'] }}</b>{{ ! empty($pm['unconfigured']) ? 'Set GENONE_DB_URL on this service; 201 System uses the same database.' : 'Trying again shortly.' }}@if(! empty($pm['login']))<div class="mono" style="margin-top:6px">{{ $pm['login'] }}</div>@endif</div>
     @endif
   </div>
 
@@ -46,7 +46,7 @@
       </ul>
       <div class="panel-foot">Rejected uploads only show an error to the employee and aren't stored yet.</div>
     @else
-      <div class="empty-state" style="flex:1"><b>{{ $paymaya['error'] }}</b>{{ ! empty($paymaya['unconfigured']) ? 'Set PAYMAYA_DB_URL on this service to read PayMaya.' : 'Trying again shortly.' }}</div>
+      <div class="empty-state" style="flex:1"><b>{{ $paymaya['error'] }}</b>{{ ! empty($paymaya['unconfigured']) ? 'Set PAYMAYA_DB_URL on this service to read PayMaya.' : 'Trying again shortly.' }}@if(! empty($paymaya['login']))<div class="mono" style="margin-top:6px">{{ $paymaya['login'] }}</div>@endif</div>
     @endif
   </div>
 </div>

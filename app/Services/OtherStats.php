@@ -30,7 +30,7 @@ class OtherStats
                     ->get(['finished_at', 'computer_name', 'employee_name', 'department', 'threats_found', 'freed_mb'])
                     ->map(fn ($r) => (array) $r + ['at' => Carbon::parse($r->finished_at)])->all(),
             ];
-        });
+        }, 'genone');
     }
 
     public static function tickets(): array
@@ -48,7 +48,7 @@ class OtherStats
                 'old' => (clone $open)->where('created_at', '<', now()->subDays(3))->count(),
                 'today' => $db->table('tickets')->whereDate('created_at', now()->toDateString())->count(),
             ];
-        });
+        }, 'genone');
     }
 
     public static function paymaya(): array
@@ -85,6 +85,6 @@ class OtherStats
                     ->get(['v.paymaya_name', 'v.status', 'v.created_at', 'e.full_name'])
                     ->map(fn ($r) => ['name' => $r->full_name ?: $r->paymaya_name, 'status' => $r->status, 'at' => $toLocal($r->created_at)])->all(),
             ];
-        });
+        }, 'paymaya');
     }
 }

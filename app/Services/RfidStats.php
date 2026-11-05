@@ -95,6 +95,6 @@ class RfidStats
                     'match' => $r->face_match, 'confidence' => $r->face_confidence,
                 ]])->all(),
             ];
-        });
+        }, 'genone');
     }
 }
