@@ -6,9 +6,24 @@ use App\Services\HealthStats;
 use App\Services\OtherStats;
 use App\Services\RfidStats;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
+    /**
+     * Health checks normally come from the scheduler loop in the start
+     * command. If none has run for 2 minutes (loop not running), opening a
+     * page runs one after the response, at most once a minute.
+     */
+    public function __construct()
+    {
+        $last = HealthStats::lastPing();
+        if ((! $last || $last->lt(now()->subMinutes(2))) && Cache::add('lazy-health-ping', 1, 60)) {
+            \Illuminate\Support\defer(fn () => Artisan::call('health:ping'));
+        }
+    }
+
     public function overview()
     {
         $health = HealthStats::all();
