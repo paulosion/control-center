@@ -2,16 +2,13 @@
 nixPkgs = ["php83", "php83Extensions.pgsql", "php83Extensions.mbstring", "php83Extensions.xml", "php83Extensions.curl", "php83Extensions.zip", "composer"]
 
 [phases.build]
-cmds = [
-    "composer install --no-dev --optimize-autoloader",
-    "php artisan config:cache",
-    "php artisan route:cache",
-    "php artisan view:cache"
-]
+cmds = ["composer install --no-dev --optimize-autoloader"]
 
 [start]
-# 1. Migrate this app's own database (todos, health checks, sessions).
-# 2. Create the login from ADMIN_EMAIL / ADMIN_PASSWORD if it's missing.
-# 3. Run the scheduler (health pings every minute) in a restart loop.
-# 4. Serve with 4 workers so a slow page doesn't block the others.
-cmd = "php artisan migrate --force; php artisan app:ensure-admin; (while true; do php artisan schedule:work --whisper; sleep 5; done) & PHP_CLI_SERVER_WORKERS=4 php artisan serve --host 0.0.0.0 --port $PORT --no-reload"
+# Config/route/view caches are built here, at start, not in the build
+# phase, so they always use the service's current Railway variables
+# (a variable added after a build would otherwise be missing).
+# Then: migrate this app's own database, create the login from
+# ADMIN_EMAIL / ADMIN_PASSWORD if missing, run the scheduler (health pings
+# every minute) in a restart loop, and serve with 4 workers.
+cmd = "php artisan config:cache && php artisan route:cache && php artisan view:cache; php artisan migrate --force; php artisan app:ensure-admin; (while true; do php artisan schedule:work --whisper; sleep 5; done) & PHP_CLI_SERVER_WORKERS=4 php artisan serve --host 0.0.0.0 --port $PORT --no-reload"
