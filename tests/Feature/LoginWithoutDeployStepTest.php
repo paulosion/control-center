@@ -27,4 +27,13 @@ class LoginWithoutDeployStepTest extends TestCase
             $this->get($page)->assertOk();
         }
     }
+
+    public function test_missing_admin_variables_are_named_on_the_sign_in_page(): void
+    {
+        config(['app.admin.email' => null, 'app.admin.password' => null]);
+
+        $this->from('/login')->post('/login', ['email' => 'me@example.com', 'password' => 'x'])
+            ->assertRedirect('/login')
+            ->assertSessionHasErrors(['email' => 'Sign-in isn't set up yet: ADMIN_EMAIL and ADMIN_PASSWORD aren't set on this Railway service.']);
+    }
 }
