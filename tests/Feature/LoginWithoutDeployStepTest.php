@@ -34,6 +34,6 @@ class LoginWithoutDeployStepTest extends TestCase
 
         $this->from('/login')->post('/login', ['email' => 'me@example.com', 'password' => 'x'])
             ->assertRedirect('/login')
-            ->assertSessionHasErrors(['email' => 'Sign-in isn't set up yet: ADMIN_EMAIL and ADMIN_PASSWORD aren't set on this Railway service.']);
+            ->assertSessionHasErrors(['email' => "Sign-in isn't set up yet: ADMIN_EMAIL and ADMIN_PASSWORD aren't set on this Railway service."]);
     }
 }
